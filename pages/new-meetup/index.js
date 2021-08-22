@@ -15,7 +15,7 @@ const NewMeetupPage = () => {
 
     console.log(data);
 
-    router.replace("/");
+    router.push("/");
   };
 
   return <NewMeetupForm onAddMeetup={addMeetupHandler} />;
