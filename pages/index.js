@@ -1,3 +1,4 @@
+import { MongoClient } from "mongodb";
 import MeetupList from "../components/meetups/MeetupList";
 
 const dummy_meetups = [
@@ -34,9 +35,26 @@ export const getStaticProps = async () => {
   // This function will never be shown or run on the client side (safety).
   // It will execute during the build process (not on the client machine!)
 
+  const client = await MongoClient.connect(
+    `mongodb+srv://Itamar:${process.env.MONGO_DB_PASSWORD}@next-js-tutorial.cs4ra.mongodb.net/meetupsDataBase?retryWrites=true&w=majority`
+  );
+  const db = client.db();
+
+  const meetupsCollection = db.collection("meetups");
+
+  const meetups = await meetupsCollection.find().toArray();
+
+  client.close();
+
   return {
     props: {
-      meetup: dummy_meetups,
+      meetup: meetups.map((meetup) => ({
+        title: meetup.title,
+        address: meetup.address,
+        image: meetup.image,
+        description: meetup.description,
+        id: meetup._id.toString(),
+      })),
     },
     revalidate: 1, // The page will be re-pre-generated every {} seconds IF there are https requests in this page.
     // This will make sure the data fetched in this case not old (at least 10 seconds to the past).
