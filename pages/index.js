@@ -38,6 +38,8 @@ export const getStaticProps = async () => {
     props: {
       meetup: dummy_meetups,
     },
+    revalidate: 1, // The page will be re-pre-generated every {} seconds IF there are https requests in this page.
+    // This will make sure the data fetched in this case not old (at least 10 seconds to the past).
   };
 };
 
